@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  extensions = [postgis]
+}
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  messages  Message[]
+  createdAt DateTime @default(now())
+}
+
+model Country {
+  id              String             @id @default(cuid())
+  canonicalName   String
+  historicalStates HistoricalBorder[]
+  populations     PopulationRecord[]
+}
+
+model HistoricalBorder {
+  id         String   @id @default(cuid())
+  countryId  String
+  yearFrom   Int
+  yearTo     Int
+  government String
+  areaKm2    Float
+  geojson    Json
+  country    Country  @relation(fields: [countryId], references: [id])
+}
+
+model PopulationRecord {
+  id        String  @id @default(cuid())
+  countryId String
+  year      Int
+  population BigInt
+  country   Country @relation(fields: [countryId], references: [id])
+
+  @@unique([countryId, year])
+}
+
+model Empire {
+  id      String @id @default(cuid())
+  name    String
+  yearFrom Int
+  yearTo   Int
+  geometry Json
+}
+
+model TimelineEvent {
+  id       String @id @default(cuid())
+  year     Int
+  title    String
+  category String
+}
+
+model ChatRoom {
+  id       String    @id @default(cuid())
+  name     String    @unique
+  category String
+  messages Message[]
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  roomId    String
+  userId    String?
+  text      String
+  reactions Json?
+  createdAt DateTime @default(now())
+  room      ChatRoom @relation(fields: [roomId], references: [id])
+  user      User?    @relation(fields: [userId], references: [id])
+}

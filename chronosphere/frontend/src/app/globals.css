@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-chrono-bg text-white;
+  background-image: radial-gradient(circle at 30% 20%, rgba(0, 213, 255, 0.1), transparent 40%),
+    radial-gradient(circle at 70% 80%, rgba(143, 83, 255, 0.12), transparent 45%);
+}
+
+.glass {
+  background: rgba(10, 18, 37, 0.48);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(15px);
+}
